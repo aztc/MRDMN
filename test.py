@@ -17,7 +17,7 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Test a model for fine-grained recognition.')
-    parser.add_argument('--val-data-dir', type=str, default='data/birds_ori.rec',
+    parser.add_argument('--val-data-dir', type=str, default='data/cub-200-2011-test.rec',
                         help='validation pictures to use.')
     parser.add_argument('--num-class', type=str, default=200,
                         help='validation dataset classes.')
@@ -25,9 +25,9 @@ def parse_args():
                         help='validation resolution to use.')
     parser.add_argument('--batch-size', type=int, default=64,
                         help='test batch size per device (CPU/GPU).')
-    parser.add_argument('--weights-path', type=str, default='weights',
+    parser.add_argument('--weights-path', type=str, default='weights/MRDML-CUB-0000.params',
                         help='weights path.')
-    parser.add_argument('--num-gpus', type=int, default=0,
+    parser.add_argument('--num-gpus', type=int, default=1,
                         help='number of gpus to use.')
 
     opt = parser.parse_args()
@@ -45,6 +45,9 @@ def test():
     
     contex = [mx.gpu(x) for x in range(opt.num_gpus)]
     net.load_parameters(opt.weights_path,ctx=contex)
+    
+
+    
     net.hybridize(static_alloc=True, static_shape=True)
     
     val_data_ori = mx.io.ImageRecordIter(
